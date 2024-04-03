@@ -4,6 +4,9 @@
 #ifndef SECOC_MODULE_STD_TYPES_H
 #define SECOC_MODULE_STD_TYPES_H
 
+#define BIT_TO_BYTES(NUMBITS) ((NUMBITS  % 8 == 0) ? (NUMBITS/8) :  (((NUMBITS / 8) + 1)))
+
+
 // Boolean Values
 #ifndef FALSE
 #define FALSE 0x00u

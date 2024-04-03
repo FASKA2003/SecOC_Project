@@ -41,6 +41,9 @@ void SecOC_Init(const SecOC_ConfigType* ConfigPtr)
         SecOCTxPduProcessingPtr = ConfigPtr->SecOCTxPduProcessing;
         SecOCRxPduProcessingPtr = ConfigPtr->SecOCRxPduProcessing;
         SecOCState = SECOC_INIT;
+
+        // Increase freshness counter
+        FVM_IncreaseCounter(SecOCTxPduProcessingPtr[0].SecOCFreshnessValueId);
     }
     else
     {
@@ -146,13 +149,33 @@ Std_ReturnType SecOC_IfTransmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr
 }
 
 /***************************************************************************************************************
- * Service name: SecOC_IfTransmit * Sws_Index : 8.3.4 [SWS_SecOC_00112] * Service ID[hex]: 0x49
- ** Sync/Async: Synchronous * Reentrancy: Reentrant for different PduIds, Non reentrant for the
- *same PduId                                 * Parameters (in): TxPduId - Identifier of the PDU
- *to be transmitted                                           * PduInfoPtr - Length of and
- *pointer to the PDU data and pointer to Meta Data                 * Parameters (inout): None *
- * Parameters (out):   None * Return value: Std_ReturnType - E_OK : Transmit request has been
- *accepted                                     *
- *                              - E_NOT_OK : Transmit request has not been accepted *
+ * Service name: constructDataToAuthenticatorTx                                                                *
+ * Parameters (in): TxPduId - Identifier of the PDU to be transmitted                                          *
+ * PduInfoPtr - Length of and pointer to the PDU data and pointer to Meta Data                                 *
+ * Parameters (in): TxPduId                                                                                    *
+ *                  AuthPdu                                                                                    *
+ *                  SecOCIntermediate
+ * Parameters (out):   None                                                                                    *
+ * Return value: None
  * Description: This service requests the transmission of PDU *
  ***************************************************************************************************************/
+static void constructDataToAuthenticator(const PduIdType TxPduId, SecOC_TxIntermediateType* SecOCIntermediate, const PduInfoType* AuthPdu ) {
+    uint8 *DataToAuthenticate = SecOCIntermediate->DataToAuth;
+    uint32 DataToAuthenticateLen = 0;
+
+    // Copy the PduId to the DataToAuthenticate
+    memcpy(&DataToAuthenticate[DataToAuthenticateLen], &SecOCTxPduProcessingPtr[TxPduId].SecOCDataId, sizeof(SecOCTxPduProcessingPtr[TxPduId].SecOCDataId));
+    DataToAuthenticateLen += sizeof(SecOCTxPduProcessingPtr[TxPduId].SecOCDataId);
+
+    // Copy the Authentic PDU to the DataToAuthenticate
+    memcpy(&DataToAuthenticate[DataToAuthenticateLen], AuthPdu->SduDataPtr, AuthPdu->SduLength);
+    DataToAuthenticateLen += AuthPdu->SduLength;
+
+    // Copy the Freshness Value to the DataToAuthenticate
+    uint32 FreshnessLenBytes = BIT_TO_BYTES(SecOCIntermediate->FreshnessLenBits);
+    memcpy(&DataToAuthenticate[DataToAuthenticateLen], SecOCIntermediate->Freshness, SecOCIntermediate->FreshnessLenBytes);
+    DataToAuthenticateLen += FreshnessLenBytes;
+
+    // Set the DataToAuthenticateLen
+    SecOCIntermediate->DataToAuthLen = DataToAuthenticateLen;
+}

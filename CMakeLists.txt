@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.13)
 # ##############################################################################
 # Set project name and source code folder location
 
-project(${PROJECT_NAME})
+project(${PROJECT_NAME} C)
 set(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Project)
 set(CM4_dir ${CMAKE_CURRENT_SOURCE_DIR}/CM4)
 set(CM7_dir ${CMAKE_CURRENT_SOURCE_DIR}/CM7)
@@ -109,7 +109,8 @@ file(GLOB_RECURSE CM4_SOURCES CONFIGURE_DEPENDS
 add_executable(${CM4_EXE}
     ${STM32CUBEMX_SOURCES}
     ${CM4_SOURCES}
-    ${CM4_STARTUP_SCRIPT})
+    ${CM4_STARTUP_SCRIPT}
+        Com_Services/Src/SecOC/FVM.c)
 
 target_compile_definitions(${CM4_EXE} PRIVATE
     ${CM4_MCU_MODEL})
@@ -135,7 +136,8 @@ file(GLOB_RECURSE CM7_SOURCES CONFIGURE_DEPENDS
 add_executable(${CM7_EXE}
     ${STM32CUBEMX_SOURCES}
     ${CM7_SOURCES}
-    ${CM7_STARTUP_SCRIPT})
+    ${CM7_STARTUP_SCRIPT}
+        Com_Services/Src/SecOC/FVM.c)
 
 target_compile_definitions(${CM7_EXE} PRIVATE
     ${CM7_MCU_MODEL})

@@ -8,18 +8,45 @@
 #include "Com.h"
 #include "SecOC_Types.h"
 #include "Std_Types.h"
+#include "SecOC_Cfg.h"
 /********************************************************************************************************/
 /************************************************MACROS**************************************************/
-#define SECOC_AUTHENTIC_PDU_MAX_LENGTH ((uint32)20)
-#define SECOC_AUTHENTICATION_HEADER_MAX_LENGTH ((uint8)4)
-#define SECOC_SECURED_PDU_MAX_LENGTH ((uint32)100)
-#define SECOC_AUTHENTICATOR_MAX_LENGTH ((uint8)32)
+#define SECOC_AUTHENTIC_PDU_MAX_LENGTH                      ((uint32)20)
+#define SECOC_AUTHENTICATION_HEADER_MAX_LENGTH              ((uint8)4)
+#define SECOC_TX_DATA_TO_AUTHENTICATOR_LENGTH               (sizeof(PduIdType) + SECOC_AUTHENTIC_PDU_MAX_LENGTH + SECOC_TX_FRESHNESS_VALUE_LENGTH)
+
+#define SECOC_FRESHNESS_MAX_LENGTH                          ((uint8)32)
+
+#define SECOC_SECURED_PDU_MAX_LENGTH                        ((uint32)100)
+#define SECOC_AUTHENTICATOR_MAX_LENGTH                      ((uint8)32)
+
+#define SECOC_RX_DATA_TO_AUTHENTICATOR_LENGTH               (sizeof(PduIdType) + SECOC_AUTHENTIC_PDU_MAX_LENGTH + (SECOC_FRESHNESS_MAX_LENGTH/8 + 1)
 /********************************************************************************************************/
 
 // ECUC_SecOC_00048 : SecOCRxAuthServiceConfigRef
 typedef CsmJob_Type SecOCRxAuthServiceConfigRef_Type;
 
 typedef CsmJob_Type SecOCTxAuthServiceConfigRef_Type;
+
+/* [SWS_SecOC_00057] The SecOC module shall provide sufficient buffers to store all intermediate data */
+typedef struct
+{
+
+    uint8                   Freshness[SECOC_FRESHNESS_MAX_LENGTH/8];  /* Complete Freshness Value */
+    uint32                  FreshnessLenBits;
+
+    uint8                   FreshnessTrunc[SECOC_FRESHNESS_MAX_LENGTH/8];   /* Truncated freshness value */
+    uint32                  FreshnessTruncLenBits;
+
+    uint8                   DataToAuth[SECOC_TX_DATA_TO_AUTHENTICATOR_LENGTH];
+    uint32                  DataToAuthLen;
+
+    uint8                   AuthenticatorPtr[SECOC_AUTHENTICATOR_MAX_LENGTH];
+    uint32                  AuthenticatorLen;
+
+} SecOC_TxIntermediateType;
+
+
 
 // SecOC authentication Tx and Rx build counters.
 typedef struct
