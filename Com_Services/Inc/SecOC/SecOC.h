@@ -144,6 +144,57 @@ Std_ReturnType SecOC_TpCancelTransmit(PduIdType TxPduId);
                                - E_NOT_OK : Cancellation was rejected by the destination module.               *
 * Description: Requests cancellation of an ongoing reception of a PDU in a lower layer communication module.   *
 ***************************************************************************************************************/
- Std_ReturnType TpCancelReceive(PduIdType RxPduId);
+Std_ReturnType TpCancelReceive(PduIdType RxPduId);
+
+/***************************************************************************************************************
+ *          * Function Info *                                                                                  *
+ *                                                                                                             *
+ * Function_Name        : SecOC_GetRxFreshness                                                                 *
+ * Function_Index       : 8.5.1 [SWS_SecOC_91007]                                                              *
+ * Function_File        : SWS of SecOC                                                                         *
+ * Function_Description  : This interface is used by the                                                        *
+ * SecOC to obtain the current freshness value                                                                 *
+ **************************************************************************************************************/
+
+Std_ReturnType SecOC_GetRxFreshness(uint16 SecOCFreshnessValueID, const uint8* SecOCTruncatedFreshnessValue,
+                                    uint32 SecOCTruncatedFreshnessValueLength, uint16 SecOCAuthVerifyAttempts, uint8* SecOCFreshnessValue,
+                                    uint32* SecOCFreshnessValueLength);
+
+
+/********************************************************
+ *          * Function Info *                           *
+ *                                                      *
+ * Function_Name        : SecOC_GetTxFreshness          *
+ * Function_Index       : 8.5.3 [SWS_SecOC_00126]       *
+ * Function_File        : SWS of SecOC                  *
+ * Function_Description  : This API returns the freshness*
+ * value from the Most Significant Bits in the first    *
+ * byte in the array (SecOCFreshnessValue),             *
+ * in big endian format.                                *
+ *******************************************************/
+
+Std_ReturnType SecOC_GetTxFreshness(uint16 SecOCFreshnessValueID, uint8* SecOCFreshnessValue,
+                                    uint32* SecOCFreshnessValueLength);
+
+
+/********************************************************
+ *          * Function Info *                           *
+ *                                                      *
+ * Function_Name        : SecOC_GetTxFreshnessTruncData *
+ * Function_Index       : 8.5.4 [SWS_SecOC_91003]       *
+ * Function_File        : SWS of SecOC                  *
+ * Function_Description  : This interface is used by the *
+ * SecOC to obtain the current freshness value          *
+ * The interface function provides also the truncated   *
+ * freshness transmitted in the secured I-PDU.          *
+ *******************************************************/
+
+Std_ReturnType SecOC_GetTxFreshnessTruncData(
+    uint16 SecOCFreshnessValueID,
+    uint8* SecOCFreshnessValue,
+    uint32* SecOCFreshnessValueLength,
+    uint8* SecOCTruncatedFreshnessValue,
+    uint32* SecOCTruncatedFreshnessValueLength
+);
 
 #endif // SECOC_H

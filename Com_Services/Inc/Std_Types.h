@@ -67,7 +67,8 @@ typedef enum
 {
     E_OK = 0x00u,
     E_NOT_OK = 0x01u,
-    E_BUSY = 0x02u
+    E_BUSY = 0x02u,
+    E_QUEUE_FULL = 0x03u
 } Std_ReturnType;
 
 // SWS_Std_00015

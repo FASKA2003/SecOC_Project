@@ -41,7 +41,7 @@ typedef struct {
     uint16 freshnessValueID;
     SecOC_VerificationResultType verificationStatus;
     uint16 secOCDataId;
-}SecOC_VerificationStatusType
+}SecOC_VerificationStatusType;
 
 /* SWS_SecOC_00991 : SecOC_OverrideStatusType*/
 /* Index : 8.8.5.4*/
@@ -53,7 +53,7 @@ typedef enum {
     SECOC_OVERRIDE_SKIP_UNTIL_LIMIT = 0x41,
     SECOC_OVERRIDE_PASS_UNTIL_LIMIT = 0x42,
     SECOC_OVERRIDE_SKIP_UNTIL_NOTICE = 0x43
-}SecOC_OverrideStatusType
+}SecOC_OverrideStatusType;
 
 typedef Std_ReturnType(*SecOC_GetTxFreshnessCalloutType)(uint16 , uint8* , uint32*);
 

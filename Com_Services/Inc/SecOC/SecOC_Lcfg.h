@@ -13,6 +13,7 @@
 /************************************************MACROS**************************************************/
 #define SECOC_AUTHENTIC_PDU_MAX_LENGTH                      ((uint32)20)
 #define SECOC_AUTHENTICATION_HEADER_MAX_LENGTH              ((uint8)4)
+#define SECOC_TX_FRESHNESS_VALUE_LENGTH                               ((uint32)24)
 #define SECOC_TX_DATA_TO_AUTHENTICATOR_LENGTH               (sizeof(PduIdType) + SECOC_AUTHENTIC_PDU_MAX_LENGTH + SECOC_TX_FRESHNESS_VALUE_LENGTH)
 
 #define SECOC_FRESHNESS_MAX_LENGTH                          ((uint8)32)
@@ -134,7 +135,7 @@ typedef struct
     uint16 SecOCAuthDataFreshnessStartPosition;
     uint16 SecOCAuthenticationBuildAttempts;
     uint16 SecOCAuthenticationVerifyAttempts;
-    uint16 SecOCAuthInfoTrucLength;
+    uint16 SecOCAuthInfoTruncLength;
     uint16 SecOCDataId;
     uint16 SecOCFreshnessValueId;
     uint8 SecOCFreshnessValueLength;
@@ -206,7 +207,7 @@ typedef struct
 typedef struct
 {
     uint16 SecOCAuthenticationBuildAttempts;
-    uint16 SecOCAuthInfoTrucLength;
+    uint16 SecOCAuthInfoTruncLength;
     uint16 SecOCDataId;
     uint16 SecOCFreshnessValueId;
     uint8 SecOCFreshnessValueLength;

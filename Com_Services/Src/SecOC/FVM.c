@@ -299,12 +299,11 @@ Std_ReturnType FVM_GetTxFreshnessTruncData (uint16 SecOCFreshnessValueID, uint8*
         //trunc the LSBs from Freshness and store it in SecOCTruncatedFreshnessValue
         if (actualFreshnessTruncatedValLen > 0) {
             (void)memcpy(SecOCTruncatedFreshnessValue, SecOCFreshnessValue, actualFreshnessTruncatedValLen);
-            uint8 bitTrunc = 8 - ((acctualFreshnessTruncVallength * 8) - *SecOCTruncatedFreshnessValueLength);
-            SecOCTruncatedFreshnessValue[acctualFreshnessTruncVallength - 1] = (SecOCFreshnessValue[acctualFreshnessTruncVallength - 1] & (~(0xFF << bitTrunc)));
+            uint8 bitTrunc = 8 - ((actualFreshnessTruncatedValLen * 8) - *SecOCTruncatedFreshnessValueLength);
+            SecOCTruncatedFreshnessValue[actualFreshnessTruncatedValLen - 1] = (SecOCFreshnessValue[actualFreshnessTruncatedValLen - 1] & (~(0xFF << bitTrunc)));
         }
         *SecOCTruncatedFreshnessValueLength = countSizeBits(SecOCTruncatedFreshnessValue, truncatedFreshnessValLenBytes);
     }
     return result;
 }
 
-#endif //SECOC_MODULE_FVM_H

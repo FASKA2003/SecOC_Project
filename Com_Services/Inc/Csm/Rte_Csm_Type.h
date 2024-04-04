@@ -31,5 +31,5 @@ typedef enum {
 typedef enum {
     CRYPTO_E_VER_OK = 0x00u,
     CRYPTO_E_VER_NOT_OK = 0x01u
-}Crypto_VerifyResultType
+}Crypto_VerifyResultType;
 #endif //SECOC_MODULE_RTE_CSM_TYPE_H
