@@ -83,12 +83,13 @@ set(STM32CUBEMX_INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/${MCU_FAMILY}_HAL_Driver/Inc/Legacy
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Device/ST/${MCU_FAMILY}/Include
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Include
-    ${CMAKE_CURRENT_SOURCE_DIR}/Com_Services/Inc 
+    ${CMAKE_CURRENT_SOURCE_DIR}/Com_Services/Inc
     ${CMAKE_CURRENT_SOURCE_DIR}/Com_Services/Inc/Com 
     ${CMAKE_CURRENT_SOURCE_DIR}/Com_Services/Inc/PduR 
     ${CMAKE_CURRENT_SOURCE_DIR}/Com_Services/Inc/Csm
     ${CMAKE_CURRENT_SOURCE_DIR}/Com_Services/Inc/CanIf 
-    ${CMAKE_CURRENT_SOURCE_DIR}/Com_Services/Inc/SecOC 
+    ${CMAKE_CURRENT_SOURCE_DIR}/Com_Services/Inc/SecOC
+    ${CMAKE_CURRENT_SOURCE_DIR}/Com_Services/Inc/Crypto
     )
 
 file(GLOB_RECURSE STM32CUBEMX_SOURCES CONFIGURE_DEPENDS
@@ -99,6 +100,7 @@ file(GLOB_RECURSE STM32CUBEMX_SOURCES CONFIGURE_DEPENDS
     ${CMAKE_CURRENT_SOURCE_DIR}/Com_Services/Src/Csm/*.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Com_Services/Src/CanIf/*.c 
     ${CMAKE_CURRENT_SOURCE_DIR}/Com_Services/Src/SecOC/*.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Com_Services/Src/Crypto/*.c
 )
 
 # ##############################################################################
