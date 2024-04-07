@@ -2,7 +2,7 @@
 #include "aes.h"
 #include "Utils.h"
 // Calculate the CMAC
-uint8* aes_cmac(uint8* in, unsigned int length, uint8* out, uint8* key)
+uint8* aes_cmac(const uint8* in, uint32 length, uint8* out, uint8* key)
 {
     uint8* K1;
     uint8* K2;
@@ -54,7 +54,7 @@ uint8* aes_cmac(uint8* in, unsigned int length, uint8* out, uint8* key)
 }
 
 // Verify the CMAC
-bool verify_mac(uint8* in, unsigned int length, uint8* out, uint8* key)
+bool verify_mac(const uint8* in, uint32 length, uint8* out, uint8* key)
 {
     bool flag = true;
     uint8 result[16];

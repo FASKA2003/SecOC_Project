@@ -5,8 +5,11 @@
 #include "SecOC.h"
 #include "SecOC_Cbk.h"
 #include "SecOC_Types.h"
+#include "SecOC_Lcfg.h"
 #include "FVM.h"
 #include "Csm.h"
+#include "ComStack_Types.h"
+#include "PduR_SecOC.h"
 #include <string.h>
 
 /***********************************************************************************************************************
@@ -19,8 +22,9 @@ const SecOCRxPduProcessing_Type* SecOCRxPduProcessing;
 
 static SecOC_StateType SecOCState = SECOC_UNINIT;
 
-extern SecOC_TxCounter_Type SecOCTxCounter;
-extern SecOC_RxCounter_Type SecOCRxCounter;
+extern SecOC_TxCounter_Type SecOCTxCounter[SECOC_NUM_RX_PDU_PROCESSING];
+extern SecOC_RxCounter_Type SecOCRxCounter[SECOC_NUM_RX_PDU_PROCESSING];
+
 
 /**********************************************************************************************************************
                                                    Initialization
@@ -42,10 +46,13 @@ void SecOC_Init(const SecOC_ConfigType* ConfigPtr)
         SecOCGeneral = ConfigPtr->SecOCGeneral;
         SecOCTxPduProcessing = ConfigPtr->SecOCTxPduProcessing;
         SecOCRxPduProcessing = ConfigPtr->SecOCRxPduProcessing;
-        SecOCState = SECOC_INIT;
 
         // Increase freshness counter
-        FVM_IncreaseCounter(SecOCTxPduProcessing[0].SecOCFreshnessValueId);
+        uint8 idx;
+        for(idx = 0; idx < SECOC_NUM_TX_PDU_PROCESSING ; idx++) {
+            FVM_IncreaseCounter(SecOCTxPduProcessing[idx].SecOCFreshnessValueId);
+        }
+        SecOCState = SECOC_INIT;
     }
     else
     {
@@ -71,27 +78,21 @@ void SecOC_DeInit(void)
     SecOCState = SECOC_UNINIT;
     /* [SWS_SecOC_00157] */
     /* Clear the Tx/Rx Buffers */
-    if (SecOCTxPduProcessing != NULL)
+    for (int idx = 0; idx < SECOC_NUM_TX_PDU_PROCESSING; idx++)
     {
         memset(
-            (void*)SecOCTxPduProcessing->SecOCTxAuthenticPduLayer
-                ->SecOCTxAuthenticLayerPduRef->SduDataPtr,
+            (void*)SecOCTxPduProcessing[idx].SecOCTxAuthenticPduLayer->SecOCTxAuthenticLayerPduRef->SduDataPtr,
             0,
-            SecOCTxPduProcessing->SecOCTxAuthenticPduLayer->SecOCTxAuthenticLayerPduRef
-                ->SduLength);
-        SecOCTxPduProcessing->SecOCTxAuthenticPduLayer->SecOCTxAuthenticLayerPduRef
-            ->SduLength = 0;
+            SecOCTxPduProcessing[idx].SecOCTxAuthenticPduLayer->SecOCTxAuthenticLayerPduRef->SduLength);
+        SecOCTxPduProcessing[idx].SecOCTxAuthenticPduLayer->SecOCTxAuthenticLayerPduRef->SduLength = 0;
     }
-    if (SecOCRxPduProcessing != NULL)
+    for (int idx = 0; idx < SECOC_NUM_RX_PDU_PROCESSING; idx++)
     {
         memset(
-            (void*)SecOCRxPduProcessing->SecOCRxSecuredPduLayer->SecOCRxSecuredPdu
-                ->SecOCRxSecuredLayerPduRef->SduDataPtr,
+            (void*)SecOCRxPduProcessing[idx].SecOCRxSecuredPduLayer->SecOCRxSecuredPdu->SecOCRxSecuredLayerPduRef->SduDataPtr,
             0,
-            SecOCRxPduProcessing->SecOCRxSecuredPduLayer->SecOCRxSecuredPdu
-                ->SecOCRxSecuredLayerPduRef->SduLength);
-        SecOCRxPduProcessing->SecOCRxSecuredPduLayer->SecOCRxSecuredPdu
-            ->SecOCRxSecuredLayerPduRef->SduLength = 0;
+            SecOCRxPduProcessing[idx].SecOCRxSecuredPduLayer->SecOCRxSecuredPdu->SecOCRxSecuredLayerPduRef->SduLength);
+        SecOCRxPduProcessing[idx].SecOCRxSecuredPduLayer->SecOCRxSecuredPdu->SecOCRxSecuredLayerPduRef->SduLength = 0;
     }
     // De-initialize the Global pointers
     SecOCGeneral = NULL;
@@ -145,11 +146,41 @@ Std_ReturnType SecOC_IfTransmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr
      * -->Upon the initial processing of a transmission request of a secured I-PDU SecOC shall
      * set the authentication build counter to 0.
      */
-    SecOCTxCounter.SecOCAuthenticationBuildCounter = 0;
+    SecOCTxCounter[TxPduId].SecOCAuthenticationBuildCounter = 0;
 
     return E_OK;
 }
 
+/***************************************************************************************************************
+* Service name: SecOC_IfCancelTransmit                                                                               *
+* Sws_Index : 8.3.6 [SWS_SecOC_00113]                                                                          *
+* Service ID[hex]: 0x4a                                                                                        *
+* Sync/Async: Synchronous                                                                                      *
+* Reentrancy: Reentrant for different PduIds, Non reentrant for the same PduId                                 *
+* Parameters (in): TxPduId - Identifier of the PDU to be transmitted                                           *
+* Parameters (inout): None                                                                                     *
+* Parameters (out):   None                                                                                     *
+* Return value: Std_ReturnType - E_OK : Cancellation was executed successfully by the destination module       *
+*                              - E_NOT_OK : Cancellation was rejected by the destination module.               *
+* Description: This service requests cancellation of an ongoing transmission of a PDU in a lower layer         *
+*              communication module                                                                            *
+***************************************************************************************************************/
+Std_ReturnType SecOC_IfCancelTransmit(PduIdType TxPduId)
+{
+    Std_ReturnType result = E_OK;
+    if (SecOCState != SECOC_INIT)
+    {
+        return E_NOT_OK;
+    }
+    memset(
+        (void*)SecOCTxPduProcessing[TxPduId]
+            .SecOCTxAuthenticPduLayer->SecOCTxAuthenticLayerPduRef->SduDataPtr,
+        0,
+        SecOCTxPduProcessing[TxPduId]
+            .SecOCTxAuthenticPduLayer->SecOCTxAuthenticLayerPduRef->SduLength);
+    SecOCTxPduProcessing[TxPduId].SecOCTxAuthenticPduLayer->SecOCTxAuthenticLayerPduRef->SduLength = 0;
+    return result;
+}
 /***************************************************************************************************************
  * Service name: constructDataToAuthenticatorTx                                                                *
  * Parameters (in): TxPduId - Identifier of the PDU to be transmitted                                          *
@@ -310,7 +341,7 @@ static Std_ReturnType prepareFreshnessTx(const PduIdType TxPduId, SecOC_TxInterm
 static Std_ReturnType authenticate(const PduIdType TxPduId, PduInfoType* AuthPdu, PduInfoType* SecPdu)
 {
     /* [SWS_SecOC_00031] authentication steps */
-    Std_ReturnType result = E_NOT_OK;
+    Std_ReturnType result;
 
     /* [SWS_SecOC_00033] */
     SecOC_TxIntermediateType SecOCIntermediate;
@@ -383,6 +414,70 @@ static Std_ReturnType authenticate(const PduIdType TxPduId, PduInfoType* AuthPdu
     /* Clear Auth */
     AuthPdu->SduLength = 0;
 
-    return result;
+    return E_OK;
 }
+
+/*********************************************************************************************************************
+ * Service name : SecOC_MainFunctionTx                                                                          *
+ * Sws_Index : [SWS_PduR_00176]                                                                                 *
+ * Service ID[hex]: 0x03                                                                                        *
+ * Parameters (in): None                                                                                        *
+ * Parameters (inout): None                                                                                     *
+ * Parameters (out): None                                                                                       *
+ * Return value: None                                                                                           *
+ * Description: This service performs the processing of the SecOC module's authentication and verification      *
+ *              processing for the Tx path.                                                                     *
+ ***************************************************************************************************************/
+void SecOC_MainFunctionTx(void) {
+    if (SecOCState != SECOC_INIT) {
+        return;
+    }
+    PduIdType idx;
+    Std_ReturnType result;
+    for (idx=0 ; idx < SECOC_NUM_TX_PDU_PROCESSING ; idx++)
+    {
+        PduInfoType* authPdu =
+            (SecOCTxPduProcessing[idx].SecOCTxAuthenticPduLayer->SecOCTxAuthenticLayerPduRef);
+        PduInfoType* securedPdu =
+            (SecOCTxPduProcessing[idx]
+                 .SecOCTxSecuredPduLayer->SecOCTxSecuredPdu->SecOCTxSecuredLayerPduRef);
+        SecOCTxSecuredPduCollection_Type* securePduCollection =
+            (SecOCTxPduProcessing[idx].SecOCTxSecuredPduLayer->SecOCTxSecuredPduCollection);
+
+        if (authPdu->SduLength > 0) {
+            result = authenticate(idx, authPdu, securedPdu);
+            if (result == E_OK) {
+                /*[SWS_SecOC_00031]*/
+                FVM_IncreaseCounter(SecOCTxPduProcessing[idx].SecOCFreshnessValueId);
+
+                /* [SWS_SecOC_00201] */
+                if (securePduCollection != NULL) {
+                    PduInfoType* AuthPduCollection = (SecOCTxPduProcessing[idx].SecOCTxSecuredPduLayer->SecOCTxSecuredPduCollection->SecOCTxAuthenticPdu->SecOCTxAuthenticPduRef);
+                    PduInfoType* CryptoPduCollection = (SecOCTxPduProcessing[idx].SecOCTxSecuredPduLayer->SecOCTxSecuredPduCollection->SecOCTxCryptographicPdu->SecOCTxCryptographicPduRef);
+                    PduIdType  authPduId = SecOCTxPduProcessing[idx].SecOCTxSecuredPduLayer->SecOCTxSecuredPduCollection->SecOCTxAuthenticPdu->SecOCTxAuthenticPduId;
+                    PduIdType  cryptoPduId = SecOCTxPduProcessing[idx].SecOCTxSecuredPduLayer->SecOCTxSecuredPduCollection->SecOCTxCryptographicPdu->SecOCTxCryptographicPduId;
+                    //Separate the Secured PDU, The Auth Pdu and authenticator will be sent separately
+
+                    /* [SWS_SecOC_00062] [SWS_SecOC_00202]*/
+                    PduR_SecOCTransmit(authPduId, AuthPduCollection);
+                    PduR_SecOCTransmit(cryptoPduId, CryptoPduCollection);
+
+                }
+                else {
+                    PduR_SecOCTransmit(idx, securedPdu);
+                }
+            } else if ((result == E_BUSY) || (result == E_QUEUE_FULL)) {
+                /* [SWS_SecOC_00227] */
+                SecOCTxCounter[idx].SecOCAuthenticationBuildCounter++;
+                if (SecOCTxCounter[idx].SecOCAuthenticationBuildCounter >= SecOCTxPduProcessing[idx].SecOCAuthenticationBuildAttempts) {
+                    /* [SWS_SecOC_00032] */
+                    authPdu->SduLength = 0;
+                }
+            } else {
+                authPdu->SduLength = 0;
+            }
+        }
+    }
+}
+
 

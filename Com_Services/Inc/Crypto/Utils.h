@@ -2,6 +2,7 @@
 #define UTILS_H
 
 #include "common.h"
+#include "Std_Types.h"
 
 void print_bytes(uint8* buf, const size_t len);
 void block_xor(uint8* dst, uint8* a, uint8* b);

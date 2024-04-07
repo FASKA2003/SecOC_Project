@@ -39,11 +39,10 @@ Std_ReturnType Csm_MacGenerate(
     uint32 *macLengthPtr) {
     uint8 key[16] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
     (void)aes_cmac(dataPtr, dataLength, macPtr, key);
-    if (macLengthPtr != NULL)
+    if (macLengthPtr != NULL) {
         *macLengthPtr = 16;
         return E_OK;
-    } else
-    {
+    } else {
         return E_NOT_OK;
     }
 }

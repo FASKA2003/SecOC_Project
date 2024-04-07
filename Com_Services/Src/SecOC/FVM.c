@@ -119,8 +119,8 @@ Std_ReturnType FVM_GetTxFreshness(uint16 SecOCFreshnessValueID, uint8* SecOCFres
         return E_NOT_OK;
     } else {
         uint32 actualFreshnessValLength = (*SecOCFreshnessValueLength <= FreshnessCounterLength[SecOCFreshnessValueID]) ? (*SecOCFreshnessValueLength ) :  (FreshnessCounterLength[SecOCFreshnessValueID]);
-        uint32 actualfreshnessValLenBytes = BIT_TO_BYTES(actualFreshnessValLength);
-        (void)memcpy(SecOCFreshnessValue, Freshness_Counter[SecOCFreshnessValueID], actualfreshnessValLenBytes);
+        uint32 actualFreshnessValLenBytes = BIT_TO_BYTES(actualFreshnessValLength);
+        (void)memcpy(SecOCFreshnessValue, Freshness_Counter[SecOCFreshnessValueID], actualFreshnessValLenBytes);
 
         /* Update Length */
         *SecOCFreshnessValueLength = actualFreshnessValLength;
@@ -216,14 +216,14 @@ Std_ReturnType FVM_GetRxFreshness( uint16 SecOCFreshnessValueID, const uint8* Se
                     {
                         uint8 MSBsCounter = (Freshness_Counter[SecOCFreshnessValueID][maxTruncatedIndex] >> remainingBitsTrunc) + 1;
                         uint8 MSBsCounterShift = MSBsCounter << remainingBitsTrunc;
-                        uint8 index;
+                        uint8 indice;
                         SecOCFreshnessValue[maxTruncatedIndex] = (SecOCTruncatedFreshnessValue[maxTruncatedIndex] & (~(0xFF << remainingBitsTrunc))) | (MSBsCounterShift);
                         if((MSBsCounterShift == 0) && (MSBsCounter > 0))
                         {
-                            for (index = maxTruncatedIndex + 1; index < freshnessValLenBytes+1; index ++)
+                            for (indice = maxTruncatedIndex + 1; indice < freshnessValLenBytes+1; index ++)
                             {
-                                SecOCFreshnessValue[index] ++;
-                                if(SecOCFreshnessValue[index] != 0)
+                                SecOCFreshnessValue[indice] ++;
+                                if(SecOCFreshnessValue[indice] != 0)
                                 {
                                     break;
                                 }

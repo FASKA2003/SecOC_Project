@@ -89,10 +89,10 @@ void MixColumns(uint8 state[4][4])
 {
     uint8 tmp[4];
     uint8 matmul[][4] = {
-        0x02, 0x03, 0x01, 0x01,
-        0x01, 0x02, 0x03, 0x01,
-        0x01, 0x01, 0x02, 0x03,
-        0x03, 0x01, 0x01, 0x02
+        {0x02, 0x03, 0x01, 0x01},
+        {0x01, 0x02, 0x03, 0x01},
+        {0x01, 0x01, 0x02, 0x03},
+        {0x03, 0x01, 0x01, 0x02}
     };
     for (int col = 0; col < 4; col++) {
         for (int row = 0; row < 4; row++) {
@@ -111,10 +111,10 @@ void InvMixColumns(uint8 state[4][4])
 {
     uint8 tmp[4];
     uint8 matmul[][4] = {
-        0x0e, 0x0b, 0x0d, 0x09,
-        0x09, 0x0e, 0x0b, 0x0d,
-        0x0d, 0x09, 0x0e, 0x0b,
-        0x0b, 0x0d, 0x09, 0x0e
+        {0x0e, 0x0b, 0x0d, 0x09},
+        {0x09, 0x0e, 0x0b, 0x0d},
+        {0x0d, 0x09, 0x0e, 0x0b},
+        {0x0b, 0x0d, 0x09, 0x0e}
     };
     for (int col = 0; col < 4; col++) {
         for (int row = 0; row < 4; row++) {
@@ -140,7 +140,7 @@ void AddRoundKey(uint8 state[4][4], uint8* key)
 }
 
 // The Cipher
-void Cipher(uint8* in, uint8* out, uint8* w, uint8 Nk, uint8 Nr)
+void Cipher(const uint8* in, uint8* out, uint8* w, uint8 Nk, uint8 Nr)
 {
     uint8 state[Nk][4];
     memcpy(state, in, 4 * Nk);
@@ -156,7 +156,7 @@ void Cipher(uint8* in, uint8* out, uint8* w, uint8 Nk, uint8 Nr)
     memcpy(out, state, Nk * 4);
 }
 
-void InvCipher(uint8* in, uint8* out, uint8* w, uint8 Nk, uint8 Nr)
+void InvCipher(const uint8* in, uint8* out, uint8* w, uint8 Nk, uint8 Nr)
 {
     uint8 state[Nk][4];
     memcpy(state, in, 16);
@@ -194,7 +194,7 @@ void KeyExpansion(uint8* key, uint8* w, uint8 Nk, uint8 Nr)
 }
 
 // Main Functions
-uint8* aes_128_encrypt(uint8* in, uint8* out, uint8* key)
+uint8* aes_128_encrypt(const uint8* in, uint8* out, uint8* key)
 {
     uint8* w;
     uint8 Nk = 4, Nr = 10;
@@ -205,7 +205,7 @@ uint8* aes_128_encrypt(uint8* in, uint8* out, uint8* key)
     return out;
 }
 
-uint8* aes_128_decrypt(uint8* in, uint8* out, uint8* key)
+uint8* aes_128_decrypt(const uint8* in, uint8* out, uint8* key)
 {
     uint8* w;
     uint8 Nk = 4, Nr = 10;

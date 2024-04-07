@@ -4,15 +4,15 @@
 #include "common.h"
 
 // Main Functions
-uint8 *aes_128_encrypt(uint8 *in, uint8 *out,
+uint8 *aes_128_encrypt(const uint8 *in, uint8 *out,
                                uint8 *key);
-uint8 *aes_128_decrypt(uint8 *in, uint8 *out,
+uint8 *aes_128_decrypt(const uint8 *in, uint8 *out,
                                uint8 *key);
 
 // The Cipher
-void Cipher(uint8 *in, uint8 *out, uint8 *w,
+void Cipher(const uint8 *in, uint8 *out, uint8 *w,
             uint8 Nk, uint8 Nr);
-void InvCipher(uint8 *in, uint8 *out, uint8 *w,
+void InvCipher(const uint8 *in, uint8 *out, uint8 *w,
                uint8 Nk, uint8 Nr);
 
 // KeyExpansion
