@@ -5,7 +5,7 @@
 #define SECOC_MODULE_STD_TYPES_H
 
 #define BIT_TO_BYTES(NUMBITS) ((NUMBITS  % 8 == 0) ? (NUMBITS/8) :  (((NUMBITS / 8) + 1)))
-
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
 // Boolean Values
 #ifndef FALSE
@@ -68,7 +68,16 @@ typedef enum
     E_OK = 0x00u,
     E_NOT_OK = 0x01u,
     E_BUSY = 0x02u,
-    E_QUEUE_FULL = 0x03u
+    E_QUEUE_FULL = 0x03u,
+    CRYPTO_E_ENTROPY_EXHAUSTED = 0x04u,
+    CRYPTO_E_KEY_READ_FAIL = 0x06u,
+    CRYPTO_E_KEY_WRITE_FAIL = 0x07u,
+    CRYPTO_E_KEY_NOT_AVAILABLE = 0x08u,
+    CRYPTO_E_KEY_NOT_VALID = 0x09u,
+    CRYPTO_E_KEY_SIZE_MISMATCH = 0x0Au,
+    CRYPTO_E_JOB_CANCELED = 0x0Cu,
+    CRYPTO_E_KEY_EMPTY = 0x0Du,
+    CRYPTO_E_CUSTOM_ERROR = 0x0Eu
 } Std_ReturnType;
 
 // SWS_Std_00015

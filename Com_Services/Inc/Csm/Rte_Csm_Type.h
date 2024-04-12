@@ -4,18 +4,18 @@
 #ifndef SECOC_MODULE_RTE_CSM_TYPE_H
 #define SECOC_MODULE_RTE_CSM_TYPE_H
 
-// SWS_Csm_91043 : Csm_ReturnType
-#define CRYPTO_E_BUSY 0x02u;
-#define CRYPTO_E_ENTROPY_EXHAUSTED 0x04u;
-#define CRYPTO_E_KEY_READ_FAIL 0x06u;
-#define CRYPTO_E_KEY_WRITE_FAIL 0x07u;
-#define CRYPTO_E_KEY_NOT_AVAILABLE 0x08u;
-#define CRYPTO_E_KEY_NOT_VALID 0x09u;
-#define CRYPTO_E_KEY_SIZE_MISMATCH 0x0Au;
-#define CRYPTO_E_JOB_CANCELED 0x0Cu;
-#define CRYPTO_E_KEY_EMPTY 0x0Du;
-#define CRYPTO_E_CUSTOM_ERROR 0x0Eu;
-
+/* SWS_Csm_91043 : Csm_ReturnType
+#define CRYPTO_E_BUSY                0x02u
+#define CRYPTO_E_ENTROPY_EXHAUSTED   0x04u
+#define CRYPTO_E_KEY_READ_FAIL       0x06u
+#define CRYPTO_E_KEY_WRITE_FAIL      0x07u
+#define CRYPTO_E_KEY_NOT_AVAILABLE   0x08u
+#define CRYPTO_E_KEY_NOT_VALID       0x09u
+#define CRYPTO_E_KEY_SIZE_MISMATCH   0x0Au
+#define CRYPTO_E_JOB_CANCELED        0x0Cu
+#define CRYPTO_E_KEY_EMPTY           0x0Du
+#define CRYPTO_E_CUSTOM_ERROR        0x0Eu
+*/
 // SWS_Csm_01029 : Crypto_OperationModeType
 typedef enum {
     CRYPTO_OPERATIONMODE_START=0x01u,

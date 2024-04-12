@@ -18,10 +18,10 @@
 
 #define SECOC_FRESHNESS_MAX_LENGTH                          ((uint8)32)
 
-#define SECOC_SECURED_PDU_MAX_LENGTH                        ((uint32)100)
+#define SECOC_SECURED_PDU_MAX_LENGTH                        ((uint32)64)
 #define SECOC_AUTHENTICATOR_MAX_LENGTH                      ((uint8)32)
 
-#define SECOC_RX_DATA_TO_AUTHENTICATOR_LENGTH               (sizeof(PduIdType) + SECOC_AUTHENTIC_PDU_MAX_LENGTH + (SECOC_FRESHNESS_MAX_LENGTH/8 + 1)
+#define SECOC_RX_DATA_TO_AUTHENTICATOR_LENGTH               (sizeof(PduIdType) + SECOC_AUTHENTIC_PDU_MAX_LENGTH + (SECOC_FRESHNESS_MAX_LENGTH/8 + 1))
 
 #define SECOC_NUM_TX_PDU_PROCESSING                         6
 #define SECOC_NUM_RX_PDU_PROCESSING                         6
@@ -50,6 +50,31 @@ typedef struct
 
 } SecOC_TxIntermediateType;
 
+/* [SWS_SecOC_00057] The SecOC module shall provide sufficient buffers to store all intermediate data */
+typedef struct
+{
+    uint8                   authenticPdu[SECOC_AUTHENTIC_PDU_MAX_LENGTH ];
+    uint32                  authenticPduLen;
+
+    uint8                   freshness[SECOC_FRESHNESS_MAX_LENGTH / 8];
+    uint32                  freshnessLenBits;
+    Std_ReturnType          freshnessResult;
+
+    uint8                   mac[SECOC_AUTHENTICATOR_MAX_LENGTH / 8];
+    uint32                  macLenBits;
+
+    uint8                   DataToAuth[SECOC_RX_DATA_TO_AUTHENTICATOR_LENGTH];
+    uint32                  DataToAuthLen;
+
+} SecOC_RxIntermediateType;
+
+typedef struct {
+    SecOC_PduCollection_Type Type;
+    uint16 CollectionId;
+    uint16 AuthId;
+    uint16 CryptId;
+    Std_ReturnType status;
+}SecOC_PduCollection;
 
 
 // SecOC authentication Tx and Rx build counters.

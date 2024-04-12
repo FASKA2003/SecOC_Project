@@ -41,5 +41,11 @@ typedef enum {
     SecOC_TPPDU
 }SecOCPduType;
 
-
+typedef enum {
+    SECOC_AUTH_COLLECTON_PDU = 0,
+    SECOC_CRYPTO_COLLECTON_PDU,
+    SECOC_SECURED_PDU_CANIF,
+    SECOC_SECURED_PDU_CANTP,
+    SECOC_SECURED_PDU_FRIF,
+}SecOC_PduCollection_Type;
 #endif //SECOC_MODULE_SECOC_TYPES_H

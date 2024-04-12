@@ -64,7 +64,8 @@ uint8 countSizeBits(const uint8* arrayBytes, uint8 maxSize)
  *******************************************************/
 Std_ReturnType FVM_IncreaseCounter(uint16 SecOCFreshnessValueID) {
     if (SecOCFreshnessValueID < SecOC_FreshnessValue_ID_MAX) {
-        for (uint8 i = 0; i < 4; i++) {
+        uint8 maxIndex = BIT_TO_BYTES(SECOC_MAX_FRESHNESS_SIZE);
+        for (uint8 i = 0; i < maxIndex; i++) {
             Freshness_Counter[SecOCFreshnessValueID][i] ++;
             if (Freshness_Counter[SecOCFreshnessValueID][i] != 0) {
                 break;
@@ -146,7 +147,7 @@ Std_ReturnType FVM_GetRxFreshness( uint16 SecOCFreshnessValueID, const uint8* Se
     } else if (SecOCTruncatedFreshnessValueLength > SECOC_FRESHNESS_MAX_LENGTH) {
         result = E_NOT_OK;
     } else {
-        uint32 freshnessValLenBytes = BIT_TO_BYTES(FreshnessCounterLength[SecOCFreshnessValueID]);
+        uint16 freshnessValLenBytes = BIT_TO_BYTES(FreshnessCounterLength[SecOCFreshnessValueID]);
 
         // Update Truncated FV length
         uint32 truncatedFreshnessValLenBytes = BIT_TO_BYTES(SecOCTruncatedFreshnessValueLength);
