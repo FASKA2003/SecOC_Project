@@ -241,6 +241,8 @@ typedef struct
     uint8 SecOCFreshnessValueLength;
     uint8 SecOCFreshnessValueTruncLength;
     boolean SecOCProvideTxTruncatedFreshnessValue;
+    boolean SecOCReAuthenticateAfterTriggerTransmit;
+    uint8 SecOCTxPduUnusedAreasDefault;
     boolean SecOCUseTxConfirmation;
     SecOCSameBufferPduCollection_Type* SecOCSameBufferPduRef;
     SecOCTxAuthServiceConfigRef_Type* SecOCTxAuthServiceConfigRef;

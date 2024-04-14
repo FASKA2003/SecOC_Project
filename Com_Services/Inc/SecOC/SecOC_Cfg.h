@@ -5,6 +5,7 @@
 #ifndef SECOC_MODULE_SECOC_CFG_H
 #define SECOC_MODULE_SECOC_CFG_H
 
+#include "Std_Types.h"
 
 #include "Std_Types.h"
 #include "SecOC_Types.h"
@@ -16,11 +17,15 @@
 #define SECOC_DEFAULT_AUTHENTICATION_INFORAMTION_PATTERN_VALUE        (uint8)0
 #define SECOC_DEV_ERROR_DETECT                                        (boolean)FALSE
 #define SECOC_ENABLE_FORCED_PASS_OVERRIDE                             (boolean)FALSE
+#define SECOC_ENABLE_SECURITY_EVENT_REPORTING                         (boolean)FALSE
 #define SECOC_IGNORE_VERIFICATION_RESULT                              (boolean)FALSE
 #define SECOC_MAIN_FUNCTION_PERIOD_TX                                 (float64)0.5
+#define SECOC_MAIN_FUNCTION_TX_PARTITION_REF                          (NULL)
 #define SECOC_MAIN_FUNCTION_PERIOD_RX                                 (float64)0.5
+#define SECOC_MAIN_FUNCTION_RX_PARTITION_REF                          (NULL)
 #define SECOC_MAX_ALIGN_SCALAR_TYPE                                   (uint8)0
 #define SECOC_OVERRIDE_STATUS_WITH_DATA_ID                            (boolean)FALSE
+#define SECOC_PROPAGATE_ONLY_FINAL_VERIFICATION_STATUS                ((boolean)FALSE)
 #define SECOC_QUERY_FRESHNESS_VALUE                                   (SecOCQueryFreshnessValue_Type)SECOC_CFUNC
 #define SECOC_VERIFICATION_STATUS_CALLOUT                             ((SecOC_VerificationStatusCalloutType*)NULL)
 #define SECOC_VERSION_INFO_API                                        (boolean)FALSE
@@ -31,20 +36,21 @@
 
 /*****************************************************************************************************************/
 /*******************************************SecOCRxPduProcessing**************************************************/
-#define SECOC_AUTH_DATA_FRESHNESS_LENGTH                              ((uint32)0)
+#define SECOC_AUTH_DATA_FRESHNESS_LENGTH                              ((uint16)0)
 #define SECOC_AUTH_DATA_FRESHNESS_START_POSITION                      ((uint16)5)
 #define SECOC_AUTHENTICATION_BUILD_ATTEMPTS                           ((uint16)5)
 #define SECOC_AUTHENTICATION_VERIFY_ATTEMPTS                          ((uint16)5)
-#define SECOC_RX_AUTH_INFO_TRUNC_LENGTH                               ((uint32)24)
-#define SECOC_CLIENT_SERVER_VERIFICATION_STATUS_PROPAGATION_MODE      (SecOCVerificationStatusPropagationMode_Type)SecOC_BOTH
+#define SECOC_RX_AUTH_INFO_TRUNC_LENGTH                               ((uint16)24)
 #define SECOC_RX_DATA_ID                                              ((uint16)0)
-#define SECOC_RX_FRESHNESS_VALUE_ID                                   ((uint32)20)
-#define SECOC_RX_FRESHNESS_VALUE_LENGTH                               ((uint32)24)
-#define SECOC_FRESHNESS_VALUE_TRUNC_LENGTH                            ((uint32)24)
+#define SECOC_RX_FRESHNESS_VALUE_ID                                   ((uint16)20)
+#define SECOC_RX_FRESHNESS_VALUE_LENGTH                               ((uint8)24)
+#define SECOC_RX_FRESHNESS_VALUE_TRUNC_LENGTH                            ((uint8)24)
 #define SECOC_RECEPTION_OVERFLOW_STRATEGY                             (SecOCReceptionOverflowStrategy_Type)SecOC_QUEUE
 #define SECOC_RECEPTION_QUEUE_SIZE                                    ((uint16)10)
 #define SECOC_USE_AUTH_DATA_FRESHNESS                                 (boolean)FALSE
 #define SECOC_VERIFICATION_STATUS_PROPAGATION_MODE                    (SecOCVerificationStatusPropagationMode_Type)SecOC_BOTH
+#define CSM_JOB_ID                                                     ((CsmJob_Type)0)
+#define SECOC_CLIENT_SERVER_VERIFICATION_STATUS_PROPAGATION_MODE      (SecOCVerificationStatusPropagationMode_Type)SecOC_BOTH
 /*--------------------------------------SecOCRxSecuredPduLayer---------------------------------------------------*/
 //-->Configuration Parameter for SecOCRxSecuredPdu
 #define SECOC_AUTH_PDU_HEADER_LENGTH                                  ((uint8)1)
@@ -169,8 +175,8 @@
 #define SECOC_TX_FRESHNESS_VALUE_TRUNC_LENGTH                         ((uint32)8)
 #define SECOC_PROVIDE_TX_TRUNCATED_FRESHNESS_VALUE                    (boolean)TRUE
 #define SECOC_RE_AUTHENTICATE_AFTER_TRIGGER_TRANSMIT                  (boolean)TRUE
-#define SECOC_TX_PDU_UNUSED_AREAS_DEFAULT                             (uint8_t)0
-#define SECOC_USE_TX_CONFIRMATION                                     (uint8_t)0
+#define SECOC_TX_PDU_UNUSED_AREAS_DEFAULT                             (uint8)0
+#define SECOC_USE_TX_CONFIRMATION                                     (boolean)FALSE
 /*****************************************************************************************************************/
 
 #endif //SECOC_MODULE_SECOC_CFG_H
