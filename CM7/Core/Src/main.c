@@ -295,7 +295,7 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 HAL_StatusTypeDef PrintToTerminal(uint8 *pData, uint16 Size) {
     HAL_UART_Transmit(&huart3, pData, Size, HAL_MAX_DELAY);
-    HAL_UART_Transmit(&huart3, (uint8*)"\r", 1, HAL_MAX_DELAY);
+    //HAL_UART_Transmit(&huart3, (uint8*)"\r", 1, HAL_MAX_DELAY);
     return HAL_OK;
 }
 /* USER CODE END 4 */

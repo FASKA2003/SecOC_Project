@@ -51,11 +51,11 @@ void SecOC_Init(const SecOC_ConfigType* ConfigPtr)
         SecOCTxPduProcessing = ConfigPtr->SecOCTxPduProcessing;
         SecOCRxPduProcessing = ConfigPtr->SecOCRxPduProcessing;
 
-        // Increase freshness counter
-        uint8 idx;
-        for(idx = 0; idx < SECOC_NUM_TX_PDU_PROCESSING ; idx++) {
-            FVM_IncreaseCounter(SecOCTxPduProcessing[idx].SecOCFreshnessValueId);
-        }
+        // Increase freshness counter for testing.
+        //uint8 idx;
+        //for(idx = 0; idx < SECOC_NUM_TX_PDU_PROCESSING ; idx++) {
+        //    FVM_IncreaseCounter(SecOCTxPduProcessing[0].SecOCFreshnessValueId);
+        //}
         SecOCState = SECOC_INIT;
     }
     else
@@ -302,8 +302,8 @@ static Std_ReturnType prepareFreshnessTx(const PduIdType TxPduId, SecOC_TxInterm
     if(SecOCGeneral->SecOCQueryFreshnessValue == SecOC_CFUNC)
     {
         /* [SWS_SecOC_00221] */
-        HAL_Delay(500);
-        PrintToTerminal((uint8*)"Inside it\n",10);
+        //HAL_Delay(500);
+        //PrintToTerminal((uint8*)"Inside it\n",10);
         if(SecOCTxPduProcessing[TxPduId].SecOCProvideTxTruncatedFreshnessValue == TRUE)
         {
 
@@ -460,8 +460,8 @@ void SecOC_MainFunctionTx(void) {
 
         if (authPdu->SduLength > 0) {
             result = authenticate(idx, authPdu, securedPdu);
-            HAL_Delay(500);
-            PrintToTerminal((uint8*)"authenticate Finish\n", 21);
+            //HAL_Delay(500);
+            //PrintToTerminal((uint8*)"authenticate Finish\n", 21);
             if (result == E_OK) {
                 /*[SWS_SecOC_00031]*/
                 FVM_IncreaseCounter(SecOCTxPduProcessing[idx].SecOCFreshnessValueId);
