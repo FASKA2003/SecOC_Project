@@ -3,8 +3,9 @@
 //
 #include "PduR_CanIf.h"
 #include "SecOC_Cbk.h"
+#include "main.h"
 //#include "CanIf.h"
-
+//extern HAL_UART_HandleTypeDef huart3;
 /**********************************************************************************************************************
                                                  FUNCTION PROTOTYPES
  *********************************************************************************************************************/
@@ -24,6 +25,8 @@
  *              failure to transmit a PDU.                                                                      *
  ***************************************************************************************************************/
 void PduR_CanIfTxConfirmation(PduIdType TxPduId, Std_ReturnType result) {
+    HAL_Delay(2000);
+    PrintToTerminal((uint8*)"PduR_CanIfTxConfirmation\n", 26);
     SecOC_TxConfirmation(TxPduId, result);
 }
 

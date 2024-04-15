@@ -26,7 +26,7 @@
 #define SECOC_MAX_ALIGN_SCALAR_TYPE                                   (uint8)0
 #define SECOC_OVERRIDE_STATUS_WITH_DATA_ID                            (boolean)FALSE
 #define SECOC_PROPAGATE_ONLY_FINAL_VERIFICATION_STATUS                ((boolean)FALSE)
-#define SECOC_QUERY_FRESHNESS_VALUE                                   (SecOCQueryFreshnessValue_Type)SECOC_CFUNC
+#define SECOC_QUERY_FRESHNESS_VALUE                                   (SecOCQueryFreshnessValue_Type)SecOC_CFUNC
 #define SECOC_VERIFICATION_STATUS_CALLOUT                             ((SecOC_VerificationStatusCalloutType*)NULL)
 #define SECOC_VERSION_INFO_API                                        (boolean)FALSE
 //Configuration Parameter for SecOCBufferLength

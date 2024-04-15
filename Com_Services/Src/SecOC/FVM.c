@@ -9,6 +9,7 @@
 #include "FVM.h"
 #include "Rte_SecOC_Type.h"
 #include "SecOC_Lcfg.h"
+#include "main.h"
 #include <string.h>
 
 
@@ -64,13 +65,17 @@ uint8 countSizeBits(const uint8* arrayBytes, uint8 maxSize)
  *******************************************************/
 Std_ReturnType FVM_IncreaseCounter(uint16 SecOCFreshnessValueID) {
     if (SecOCFreshnessValueID < SecOC_FreshnessValue_ID_MAX) {
-        uint8 maxIndex = BIT_TO_BYTES(SECOC_MAX_FRESHNESS_SIZE);
-        for (uint8 i = 0; i < maxIndex; i++) {
-            Freshness_Counter[SecOCFreshnessValueID][i] ++;
-            if (Freshness_Counter[SecOCFreshnessValueID][i] != 0) {
-                break;
-            }
-        }
+        //uint8 maxIndex = BIT_TO_BYTES(SECOC_MAX_FRESHNESS_SIZE);
+        //for (uint8 i = 0; i < maxIndex; i++) {
+            Freshness_Counter[SecOCFreshnessValueID][0] ++;
+            //uint8 value = Freshness_Counter[SecOCFreshnessValueID][0];
+            //HAL_Delay(500);
+            //PrintToTerminal((uint8*)"Value = ", 8);
+            //PrintToTerminal((uint8*)&value, 1);
+            //if (Freshness_Counter[SecOCFreshnessValueID][i] != 0) {
+            //    break;
+            //}
+        //}
         return E_OK;
     } else {
         return E_NOT_OK;

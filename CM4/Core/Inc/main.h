@@ -30,7 +30,7 @@ extern "C"
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32h7xx_hal.h"
-
+#include "Std_Types.h"
     /* Private includes ----------------------------------------------------------*/
     /* USER CODE BEGIN Includes */
 
@@ -53,6 +53,7 @@ extern "C"
 
     /* Exported functions prototypes ---------------------------------------------*/
     void Error_Handler(void);
+    HAL_StatusTypeDef PrintToTerminal(uint8 *pData, uint16 Size);
 
     /* USER CODE BEGIN EFP */
 

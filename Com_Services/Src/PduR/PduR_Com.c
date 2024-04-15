@@ -3,7 +3,8 @@
 //
 #include "PduR_Com.h"
 #include "SecOC.h"
-
+#include "main.h"
+//extern HAL_UART_HandleTypeDef huart3;
 /**********************************************************************************************************************
                                                  FUNCTION PROTOTYPES
  *********************************************************************************************************************/
@@ -25,5 +26,6 @@ Std_ReturnType PduR_ComTransmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr
     // 1. For each transmission request of an Authentic I-PDU, the upper layer communication module shall call
     //    the PduR module through PduR_<Up>Transmit.
     // 2. The PduR routes this request to the SecOC module and call SecOC_[If|Tp]Transmit.
+    PrintToTerminal((uint8*)"PduR_ComTransmit\n", 17);
     return SecOC_IfTransmit(TxPduId, PduInfoPtr);
 }

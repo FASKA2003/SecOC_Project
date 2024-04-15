@@ -5,7 +5,10 @@
 #include "ComStack_Types.h"
 #include "PduR_CanIf.h"
 #include "CanIf.h"
+#include "main.h"
 //#include "stm32h7xx_hal_fdcan.h"
+
+//extern HAL_UART_HandleTypeDef huart3;
 
 /***************************************************************************************************************
 * Service name: CanIf_Transmit                                                                               *
@@ -22,23 +25,15 @@
 * Description: This service requests the transmission of PDU                                                   *
 ***************************************************************************************************************/
 Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr) {
-    /*if (PduInfoPtr->SduLength > 8) {
-        for (int i = 0; i < PduInfoPtr->SduLength; i+=8) {
-            if(HAL_FDCAN_AddMessageToTxFifoQ(&hfdcan1, &TxPduId, PduInfoPtr->SduDataPtr + i, PduInfoPtr->SduLength - i) != HAL_OK) {
-                return PduR_CanIfTxConfirmation(TxPduId, E_NOT_OK);
-            }
-            else {
-                return PduR_CanIfTxConfirmation(TxPduId, E_OK);
-            }
-        }
-    } else {
-        if(HAL_FDCAN_AddMessageToTxFifoQ(&hfdcan1, &TxPduId, PduInfoPtr->SduDataPtr, PduInfoPtr->SduLength) != HAL_OK) {
-            return PduR_CanIfTxConfirmation(TxPduId, E_NOT_OK);
-        }
-        else {
-            return PduR_CanIfTxConfirmation(TxPduId, E_OK);
-        }
-    }*/
+    PrintToTerminal((uint8*)"CanIf_Transmit\n", 16);
+    //uint8 buff = PduInfoPtr->SduLength;
+    //PrintToTerminal((uint8*)&buff, 1);
+    HAL_Delay(500);
+    if (PrintToTerminal((uint8*)PduInfoPtr->SduDataPtr, PduInfoPtr->SduLength) != HAL_OK) {
+        PduR_CanIfTxConfirmation(TxPduId, E_NOT_OK);
+        return E_NOT_OK;
+    }
+    PrintToTerminal((uint8*)"\n\r", 2);
     PduR_CanIfTxConfirmation(TxPduId, E_OK);
     return E_OK;
 }

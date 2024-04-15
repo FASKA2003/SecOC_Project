@@ -12,6 +12,7 @@
 #include "Rte_Csm_Type.h"
 #include "ComStack_Types.h"
 #include "PduR_SecOC.h"
+#include "main.h"
 #include <string.h>
 
 /***********************************************************************************************************************
@@ -24,9 +25,10 @@ const SecOCRxPduProcessing_Type* SecOCRxPduProcessing;
 
 static SecOC_StateType SecOCState = SECOC_UNINIT;
 
-extern SecOC_TxCounter_Type SecOCTxCounter[SECOC_NUM_RX_PDU_PROCESSING];
-extern SecOC_RxCounter_Type SecOCRxCounter[SECOC_NUM_RX_PDU_PROCESSING];
-extern
+extern SecOC_TxCounter_Type SecOCTxCounters[SECOC_NUM_RX_PDU_PROCESSING];
+extern SecOC_RxCounter_Type SecOCRxCounters[SECOC_NUM_RX_PDU_PROCESSING];
+
+//extern HAL_UART_HandleTypeDef huart3;
 
 /**********************************************************************************************************************
                                                    Initialization
@@ -148,8 +150,8 @@ Std_ReturnType SecOC_IfTransmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr
      * -->Upon the initial processing of a transmission request of a secured I-PDU SecOC shall
      * set the authentication build counter to 0.
      */
-    SecOCTxCounter[TxPduId].SecOCAuthenticationBuildCounter = 0;
-
+    SecOCTxCounters[TxPduId].SecOCAuthenticationBuildCounter = 0;
+    PrintToTerminal((uint8*)"SecOC_IfTransmit\n", 17);
     return E_OK;
 }
 
@@ -295,10 +297,13 @@ static Std_ReturnType prepareFreshnessTx(const PduIdType TxPduId, SecOC_TxInterm
 
     SecOCIntermediate->FreshnessLenBits = SecOCTxPduProcessing[TxPduId].SecOCFreshnessValueLength;
     SecOCIntermediate->FreshnessTruncLenBits = SecOCTxPduProcessing[TxPduId].SecOCFreshnessValueTruncLength;
-
+    HAL_Delay(500);
+    PrintToTerminal((uint8*)"prepareFreshnessTx\n", 19);
     if(SecOCGeneral->SecOCQueryFreshnessValue == SecOC_CFUNC)
     {
         /* [SWS_SecOC_00221] */
+        HAL_Delay(500);
+        PrintToTerminal((uint8*)"Inside it\n",10);
         if(SecOCTxPduProcessing[TxPduId].SecOCProvideTxTruncatedFreshnessValue == TRUE)
         {
 
@@ -321,7 +326,6 @@ static Std_ReturnType prepareFreshnessTx(const PduIdType TxPduId, SecOC_TxInterm
                 SecOCIntermediate->Freshness,
                 &SecOCIntermediate->FreshnessLenBits
             );
-
         }
     }
     return result;
@@ -372,7 +376,14 @@ static Std_ReturnType authenticate(const PduIdType TxPduId, PduInfoType* AuthPdu
         SecOCIntermediate.AuthenticatorPtr,
         &SecOCIntermediate.AuthenticatorLen
     );
-
+    /*PrintToTerminal(SecOCIntermediate.DataToAuth, 46);
+    PrintToTerminal((uint8*)"\n\r", 2);
+    HAL_Delay(500);
+    PrintToTerminal(SecOCIntermediate.AuthenticatorPtr, 16);
+    PrintToTerminal((uint8*)"\n\r", 2);
+    HAL_Delay(500);
+    PrintToTerminal(SecOCIntermediate.Freshness, 4);
+    PrintToTerminal((uint8*)"\n\r", 2);*/
     /* [SWS_SecOC_00227] */
     if( (result == E_NOT_OK) || (result == E_BUSY) || (result == E_QUEUE_FULL) )
     {
@@ -434,6 +445,7 @@ void SecOC_MainFunctionTx(void) {
     if (SecOCState != SECOC_INIT) {
         return;
     }
+    PrintToTerminal((uint8*)"SecOC_MainFunctionTx\n", 21);
     PduIdType idx;
     Std_ReturnType result;
     for (idx=0 ; idx < SECOC_NUM_TX_PDU_PROCESSING ; idx++)
@@ -448,6 +460,8 @@ void SecOC_MainFunctionTx(void) {
 
         if (authPdu->SduLength > 0) {
             result = authenticate(idx, authPdu, securedPdu);
+            HAL_Delay(500);
+            PrintToTerminal((uint8*)"authenticate Finish\n", 21);
             if (result == E_OK) {
                 /*[SWS_SecOC_00031]*/
                 FVM_IncreaseCounter(SecOCTxPduProcessing[idx].SecOCFreshnessValueId);
@@ -470,8 +484,9 @@ void SecOC_MainFunctionTx(void) {
                 }
             } else if ((result == E_BUSY) || (result == E_QUEUE_FULL)) {
                 /* [SWS_SecOC_00227] */
-                SecOCTxCounter[idx].SecOCAuthenticationBuildCounter++;
-                if (SecOCTxCounter[idx].SecOCAuthenticationBuildCounter >= SecOCTxPduProcessing[idx].SecOCAuthenticationBuildAttempts) {
+
+                SecOCTxCounters[idx].SecOCAuthenticationBuildCounter++;
+                if (SecOCTxCounters[idx].SecOCAuthenticationBuildCounter >= SecOCTxPduProcessing[idx].SecOCAuthenticationBuildAttempts) {
                     /* [SWS_SecOC_00032] */
                     authPdu->SduLength = 0;
                 }
@@ -500,6 +515,7 @@ void SecOC_MainFunctionTx(void) {
 ***************************************************************************************************************/
 void SecOC_TxConfirmation(PduIdType TxPduId, Std_ReturnType result) {
     /* [SWS_SecOC_00064] */
+    PrintToTerminal((uint8*)"SecOC_TxConfirmation\n", 23);
     PduInfoType* securedPdu = (SecOCTxPduProcessing[TxPduId].SecOCTxSecuredPduLayer->SecOCTxSecuredPdu->SecOCTxSecuredLayerPduRef);
     if (result == E_OK) {
         securedPdu->SduLength = 0;
@@ -540,8 +556,8 @@ void SecOC_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr) {
     }
 
     /* [SWS_SecOC_00234], [SWS_SecOC_00235] */
-    SecOCRxCounter[RxPduId].SecOCAuthenticationBuildCounter = 0;
-    SecOCRxCounter[RxPduId].SecOCAuthenticationVerifyCounter = 0;
+    SecOCRxCounters[RxPduId].SecOCAuthenticationBuildCounter = 0;
+    SecOCRxCounters[RxPduId].SecOCAuthenticationVerifyCounter = 0;
 }
 
 static void parseSecuredPdu(PduIdType RxPduId, PduInfoType* SecPdu, SecOC_RxIntermediateType* SecOCIntermediate) {
@@ -563,7 +579,7 @@ static void parseSecuredPdu(PduIdType RxPduId, PduInfoType* SecPdu, SecOC_RxInte
     memcpy(SecOCIntermediate->authenticPdu, &SecPdu->SduDataPtr[cursor], SecOCIntermediate->authenticPduLen);
     cursor += SecOCIntermediate->authenticPduLen;
 
-    uint16 authVerifyAttempts = SecOCRxCounter[RxPduId].SecOCAuthenticationVerifyCounter;
+    uint16 authVerifyAttempts = SecOCRxCounters[RxPduId].SecOCAuthenticationVerifyCounter;
 
     /* Get Rx freshness from FVM using the truncated freshness in SecPdu */
     const uint8* SecOCTruncatedFreshnessValue = &SecPdu->SduDataPtr[cursor];
@@ -648,7 +664,7 @@ static Std_ReturnType verify(PduIdType RxPduId, PduInfoType* SecPdu, SecOC_Verif
         if ((Mac_Verify == E_QUEUE_FULL) || (Mac_Verify == E_BUSY) || (Mac_Verify == E_NOT_OK))
         {
             /* [SWS_SecOC_00240] */
-            if (SecOCRxCounter[RxPduId].SecOCAuthenticationBuildCounter
+            if (SecOCRxCounters[RxPduId].SecOCAuthenticationBuildCounter
                 >= SecOCRxPduProcessing[RxPduId].SecOCAuthenticationVerifyAttempts)
             {
                 *verificationResult = SECOC_AUTHENTICATIONBUILDFAILURE;
@@ -663,7 +679,7 @@ static Std_ReturnType verify(PduIdType RxPduId, PduInfoType* SecPdu, SecOC_Verif
         else if ((Mac_Verify == CRYPTO_E_KEY_NOT_VALID) || (Mac_Verify == CRYPTO_E_KEY_EMPTY))
         {
             /*[SWS_SecOC_241]*/
-            if (SecOCRxCounter[RxPduId].SecOCAuthenticationVerifyCounter
+            if (SecOCRxCounters[RxPduId].SecOCAuthenticationVerifyCounter
                 == SecOCRxPduProcessing[RxPduId].SecOCAuthenticationVerifyAttempts)
             {
                 *verificationResult = SECOC_VERIFICATIONFAILURE;
@@ -724,8 +740,8 @@ void SecOC_MainFunctionRx(void)
             else if ((result == E_BUSY) || (result == E_QUEUE_FULL))
             {
                 /* [SWS_SecOC_00227] */
-                SecOCRxCounter[idx].SecOCAuthenticationVerifyCounter++;
-                if (SecOCRxCounter[idx].SecOCAuthenticationVerifyCounter
+                SecOCRxCounters[idx].SecOCAuthenticationVerifyCounter++;
+                if (SecOCRxCounters[idx].SecOCAuthenticationVerifyCounter
                     >= SecOCRxPduProcessing[idx].SecOCAuthenticationVerifyAttempts)
                 {
                     /* [SWS_SecOC_00032] */
@@ -735,10 +751,10 @@ void SecOC_MainFunctionRx(void)
             else if ((result == CRYPTO_E_KEY_NOT_VALID) || (result == CRYPTO_E_KEY_EMPTY))
             {
                 /*[SWS_SecOC_00239]*/
-                SecOCRxCounter[idx].SecOCAuthenticationBuildCounter = 0;
-                SecOCRxCounter[idx].SecOCAuthenticationVerifyCounter++;
+                SecOCRxCounters[idx].SecOCAuthenticationBuildCounter = 0;
+                SecOCRxCounters[idx].SecOCAuthenticationVerifyCounter++;
 
-                if (SecOCRxCounter[idx].SecOCAuthenticationVerifyCounter
+                if (SecOCRxCounters[idx].SecOCAuthenticationVerifyCounter
                     >= SecOCRxPduProcessing[idx].SecOCAuthenticationVerifyAttempts)
                 {
                     securedPdu->SduLength = 0;

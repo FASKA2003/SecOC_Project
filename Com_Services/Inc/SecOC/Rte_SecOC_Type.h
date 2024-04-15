@@ -20,7 +20,7 @@
 
 /* SWS_SecOC_91012 : SecOC_FreshnessArrayType*/
 /* Index : 8.8.5.1*/
-#define SECOC_MAX_FRESHNESS_SIZE 32
+#define SECOC_MAX_FRESHNESS_SIZE 8
 typedef uint8                 SecOC_FreshnessArrayType[SECOC_MAX_FRESHNESS_SIZE];
 
 

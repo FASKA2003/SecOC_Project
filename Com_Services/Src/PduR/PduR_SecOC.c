@@ -4,7 +4,8 @@
 #include "PduR_SecOC.h"
 #include "CanIf.h"
 #include "Com.h"
-
+#include "main.h"
+//extern HAL_UART_HandleTypeDef huart3;
 /****************************************************************************************************************
  * Service name : PduR_SecOCTransmit                                                                            *
  * Sws_Index : [SWS_PduR_00406]                                                                                 *
@@ -20,6 +21,7 @@
  * Description: This service requests transmission of a PDU.                                                    *
  ***************************************************************************************************************/
 Std_ReturnType PduR_SecOCTransmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr) {
+    PrintToTerminal((uint8*)"PduR_SecOCTransmit\n", 19);
     return CanIf_Transmit(TxPduId, PduInfoPtr);
 }
 
@@ -75,4 +77,12 @@ void PduR_SecOCIfRxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr) 
 void PduR_SecOCIfTxConfirmation(PduIdType TxPduId, Std_ReturnType result) {
     Com_TxConfirmation(TxPduId, result);
     // I need to print successful transmission on the serial monitor
+    if( result == E_OK )
+    {
+        PrintToTerminal((uint8*)"PduR_SecOCIfTxConfirmation 'E_OK' \n", 36);
+    }
+    else
+    {
+        PrintToTerminal((uint8*)"PduR_SecOCIfTxConfirmation 'E_NOT_OK' \n", 40);
+    }
 }

@@ -41,11 +41,11 @@ PduInfoType SecOC_AuthenticPduBufferRx = {
 /*
 * Start Of General
  */
-
+/*
 SecOC_MainFunctionTxType SecOC_MainFunctionTxConf =
     {
         SECOC_MAIN_FUNCTION_PERIOD_TX,
-        SECOC_MAIN_FUNCTION_TX_PARTITION_REF, /* NOT SURE ABOUT THAT TYPE */
+        SECOC_MAIN_FUNCTION_TX_PARTITION_REF,
 
 };
 
@@ -53,25 +53,23 @@ SecOC_MainFunctionTxType SecOC_MainFunctionTxConf =
 SecOC_MainFunctionRxType SecOCMainFunctionRx =
     {
         SECOC_MAIN_FUNCTION_PERIOD_RX,
-        SECOC_MAIN_FUNCTION_RX_PARTITION_REF, /* NOT SURE ABOUT THAT TYPE */
+        SECOC_MAIN_FUNCTION_RX_PARTITION_REF,
 
 };
+*/
 
-
-
-SecOC_GeneralType SecOC_General =
-    {
+SecOCGeneral_Type SecOC_General = {
         SECOC_DEFAULT_AUTHENTICATION_INFORAMTION_PATTERN_VALUE,
         SECOC_DEV_ERROR_DETECT,
         SECOC_ENABLE_FORCED_PASS_OVERRIDE,
-        SECOC_ENABLE_SECURITY_EVENT_REPORTING,
         SECOC_IGNORE_VERIFICATION_RESULT,
+        SECOC_MAIN_FUNCTION_PERIOD_RX,
+        SECOC_MAIN_FUNCTION_PERIOD_TX,
         SECOC_MAX_ALIGN_SCALAR_TYPE,
-        SECOC_OVERRIDE_STATUS_WITH_DATA_ID,
-        SECOC_PROPAGATE_ONLY_FINAL_VERIFICATION_STATUS,
-        SECOC_QUERY_FRESHNESS_VALUE,
-        /* SECOC_VERIFICATION_STATUS_CALLOUT,*/
+         SECOC_OVERRIDE_STATUS_WITH_DATA_ID,
         SECOC_VERSION_INFO_API,
+        /* SECOC_VERIFICATION_STATUS_CALLOUT,*/
+        SECOC_QUERY_FRESHNESS_VALUE,
         /*SECOC_SECURITY_EVENT_REFS,*/ /* can't have the container of it */
 
 };
@@ -100,11 +98,11 @@ SecOCRxSecuredPduLayer_Type SecOC_RxSecuredPduLayer[] = {
 };
 
 CsmJob_Type CsmJob = {
-    CSM_JOB_ID,
+    0
 };
 
 SecOCRxAuthServiceConfigRef_Type SecOCRxAuthServiceConfigRef = {
-    &CsmJob,
+    0
 };
 
 SecOCSameBufferPduCollection_Type SecOC_SameBufferPduRef = {
@@ -112,7 +110,7 @@ SecOCSameBufferPduCollection_Type SecOC_SameBufferPduRef = {
 };
 
 SecOCTxAuthServiceConfigRef_Type SecOCTxAuthServiceConfigRef = {
-    &CsmJob,
+    0
 };
 
 SecOCTxAuthenticPduLayer_Type SecOC_TxAuthenticPduLayer[] = {
@@ -195,7 +193,7 @@ SecOC_ConfigType SecOC_Config = {
     &SecOC_General,
     &SecOC_RxPduProcessing[0],
     &SecOC_TxPduProcessing[0],
-    SecOC_SameBufferPduRef
+    {100}
 };
 
 SecOC_TxCounter_Type SecOCTxCounters[SECOC_NUM_TX_PDU_PROCESSING] = {

@@ -53,6 +53,8 @@ add_compile_definitions(
     $<$<CONFIG:Debug>:DEBUG>
     USE_HAL_DRIVER)
 
+#
+
 add_compile_options(
   -Wall
   -Wextra
@@ -62,8 +64,8 @@ add_compile_options(
   -Wformat=2
   -Wformat-truncation
   # -Wundef
-  -fno-common
   -Wno-unused-parameter
+  -fno-common
   "$<$<COMPILE_LANGUAGE:CXX>:-Wconversion;-Wno-volatile;-Wold-style-cast;-Wuseless-cast;-Wsuggest-override>"
   "$<$<CONFIG:Debug>:-Og;-g3;-ggdb>"
   "$<$<CONFIG:Release>:-Og;-g0>")
@@ -83,6 +85,7 @@ set(STM32CUBEMX_INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/${MCU_FAMILY}_HAL_Driver/Inc/Legacy
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Device/ST/${MCU_FAMILY}/Include
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Include
+    ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/BSP/STM32H7xx_Nucleo
     ${CMAKE_CURRENT_SOURCE_DIR}/Com_Services/Inc
     ${CMAKE_CURRENT_SOURCE_DIR}/Com_Services/Inc/Com 
     ${CMAKE_CURRENT_SOURCE_DIR}/Com_Services/Inc/PduR 
@@ -95,6 +98,7 @@ set(STM32CUBEMX_INCLUDE_DIRECTORIES
 file(GLOB_RECURSE STM32CUBEMX_SOURCES CONFIGURE_DEPENDS
     ${CMAKE_CURRENT_SOURCE_DIR}/Common/*.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/*.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/BSP/STM32H7xx_Nucleo/*.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Com_Services/Src/Com/*.c 
     ${CMAKE_CURRENT_SOURCE_DIR}/Com_Services/Src/PduR/*.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Com_Services/Src/Csm/*.c

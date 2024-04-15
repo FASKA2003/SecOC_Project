@@ -1,4 +1,4 @@
-.PHONY: all build build-container cmake format flash-stlink flash-jlink format-container shell image build-container clean clean-image clean-all
+.PHONY: all build cmake format flash-stlink clean clean-all
 ############################### Native Makefile ###############################
 
 PROJECT_NAME ?= firmware
@@ -45,7 +45,7 @@ format: $(addsuffix .format,$(SRCS))
 DEVICE = STM32H755
 
 flash-st: build
-	st-flash --reset write $(BUILD_DIR)/$(PROJECT_NAME).bin 0x08000000
+	st-flash --reset write $(BUILD_DIR)/$(PROJECT_NAME)-cm7.bin 0x08000000
 
 #$(BUILD_DIR)/jlink-script:
 #	touch $@

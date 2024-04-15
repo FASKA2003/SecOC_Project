@@ -260,7 +260,7 @@ typedef struct
     boolean SecOCIgnoreVerificationResult;
     float64 SecOCMainFunctionPeriodRx;
     float64 SecOCMainFunctionPeriodTx;
-    uint8 SecOCMaxAlignScalarType[100];
+    uint8 SecOCMaxAlignScalarType;
     boolean SecOCOverrideStatusWithDataId;
     boolean SecOCVersionInfoApi;
     SecOCQueryFreshnessValue_Type SecOCQueryFreshnessValue;
