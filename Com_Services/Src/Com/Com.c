@@ -8,8 +8,6 @@
 
 //extern HAL_UART_HandleTypeDef huart3;
 
-uint8 data[] = "This is a test message for SecOC";
-
 void Com_TxConfirmation(PduIdType TxPduId, Std_ReturnType result) {
 
     if( result == E_OK )
@@ -31,12 +29,12 @@ void Com_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
     PrintToTerminal((uint8*)PduInfoPtr->SduDataPtr, PduInfoPtr->SduLength);
 }
 
-void Com_MainTx(void)
+void Com_MainTx(uint8* data, uint8 length)
 {
     PrintToTerminal((uint8*)"COM Tx\n", 8);
     PduInfoType SPDU;
     SPDU.SduDataPtr = data;
-    SPDU.SduLength = 32;
+    SPDU.SduLength = length;
     SPDU.MetaDataPtr = NULL;
     PduR_ComTransmit(0, &SPDU);
 }

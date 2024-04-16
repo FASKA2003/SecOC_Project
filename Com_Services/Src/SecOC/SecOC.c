@@ -494,6 +494,7 @@ void SecOC_MainFunctionTx(void) {
                 authPdu->SduLength = 0;
             }
         }
+        return;
     }
 }
 

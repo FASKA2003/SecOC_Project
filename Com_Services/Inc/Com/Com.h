@@ -44,5 +44,5 @@ void Com_TxConfirmation(PduIdType TxPduId, Std_ReturnType result);
 void Com_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
 
 
-void Com_MainTx(void);
+void Com_MainTx(uint8* data, uint8 length);
 #endif //SECOC_MODULE_COM_H

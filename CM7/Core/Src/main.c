@@ -38,7 +38,8 @@
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
 #endif
 extern SecOC_ConfigType SecOC_Config;
-
+uint8 data1[] = "This is a test message for SecOC";
+uint8 data2[] = "Hello this is ayoub el mahfoudi";
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -152,7 +153,11 @@ __HAL_RCC_HSEM_CLK_ENABLE();
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  Com_MainTx();
+  Com_MainTx(data1,32);
+  HAL_Delay(500);
+  SecOC_MainFunctionTx();
+  HAL_Delay(1000);
+  Com_MainTx(data2, 31);
   HAL_Delay(500);
   SecOC_MainFunctionTx();
   while (1)
